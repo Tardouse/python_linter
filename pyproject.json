@@ -3,7 +3,7 @@
     "name": "ruff-pre-commit",
     "version": "0.0.0",
     "dependencies": {
-      "ruff": "0.9.8"
+      "ruff": "0.9.9"
     }
   }
 }
