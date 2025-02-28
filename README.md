@@ -1,6 +1,22 @@
 # Python script for checking code format and lint
 
 
+## Usage
+
+1. Install dependencies
+```bash
+pip install -U ruff pre-commit
+```
+2. Download files
+```bash
+wget https://raw.githubusercontent.com/z872845991/python_linter/refs/heads/main/.pre-commit-config.yaml
+wget https://raw.githubusercontent.com/z872845991/python_linter/refs/heads/main/ruff.toml
+```
+3. cd to your project and hook
+```bash
+pre-commit install
+```
+
 
 
 # Thanks
