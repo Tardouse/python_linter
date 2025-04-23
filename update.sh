@@ -6,12 +6,17 @@ PRE_COMMIT_PATH="./.pre-commit-config.yaml"
 CURRENT_VERSION=$(jq -r '.project.dependencies.ruff' $PYPROJECT_PATH)
 ALL_VERSIONS=$(curl -s "$URL" | jq -r '.releases | keys | .[]' | sort -V)
 
-TARGET_VERSIONS=$(echo "$ALL_VERSIONS" | awk -v current_version="$CURRENT_VERSION" '$0 > current_version')
+TARGET_VERSIONS=$(echo "$ALL_VERSIONS" | awk -v current_version="$CURRENT_VERSION" '
+      BEGIN { seen = 0 }
+      $0 == current_version { seen = 1; next }
+      seen { print }
+	  ')
 
 for version in $TARGET_VERSIONS; do
 	# update pyproject.json
 	jq '.project.dependencies.ruff = $version' --arg version $version $PYPROJECT_PATH > tmp.$$.json && mv tmp.$$.json $PYPROJECT_PATH
-
+	
+	echo $version
 	# update .pre-commit-config.yaml
     sed -i "s/rev: v[0-9]\+\.[0-9]\+\.[0-9]\+/rev: v$version/" "$PRE_COMMIT_PATH"
 done
@@ -24,3 +29,4 @@ if [[ -n "$(git status -s)" ]]; then
 else
 	echo "No change for version v$version"
 fi
+
